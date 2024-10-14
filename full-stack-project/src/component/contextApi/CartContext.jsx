@@ -86,22 +86,37 @@ export const CartProvider = ({ children }) => {
             console.error('User is not logged in');
             return; // Prevent further execution if the user is not logged in
         }
-
+        console.log('ProductItem', productId);
+        console.log(cartItems)
+        const token = localStorage.getItem('token');
+    
+        if (!token) {
+            console.error('Token is missing');
+            return;
+        }
+    
         try {
-            const response = await axios.post('http://localhost:8080/cart/remove', {
-                productId,
-                userId: user.id, // Ensure you're getting the user ID from user object
-            });
+            const response = await axios.post(
+                'http://localhost:8080/cart/remove',
+                { productId }, // Only send the productId
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            
             // Update cart items after removing
             const updatedCartItems = cartItems.filter(item => item.productId !== productId);
+            console.log(cartItems)
             setCartItems(updatedCartItems);
-            localStorage.setItem('cartItems', JSON.stringify(updatedCartItems)); // Update local storage
+            localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
             console.log('Item removed:', response.data);
         } catch (error) {
             console.error('Failed to remove item from cart:', error);
         }
     };
-
+    
     return (
         <CartContext.Provider value={{ cartItems, products, addToCart, removeFromCart }}>
             {children}

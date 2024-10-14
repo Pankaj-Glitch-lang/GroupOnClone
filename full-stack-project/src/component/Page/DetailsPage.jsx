@@ -1,15 +1,25 @@
 import { Box, Flex, Image, Text, Button } from '@chakra-ui/react';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useCart } from '../contextApi/CartContext'; // Use Cart Context
+import { useAuth } from '../contextApi/AuthConetxt'; // Adjust the path
 
 const DetailsPage = () => {
     const { id } = useParams();
     const [data, setData] = useState({});
     const [error, setError] = useState(false);
+    const { user } = useAuth(); // Use auth context
+    const navigate = useNavigate(); // Initialize useNavigate
 
     const { addToCart } = useCart(); // Use the addToCart function from context
+
+    useEffect(() => {
+        if (!user) {
+            console.log('User logged in:', user); // Log the user when it's updated
+            navigate('/signin'); // Redirect to home page upon login
+        }
+    }, [user]);
 
     const fetchDetails = async () => {
         try {

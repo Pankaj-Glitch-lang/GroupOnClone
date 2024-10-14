@@ -8,29 +8,31 @@ import Notifications from './Notifications';
 import SignUp from './SignUp';
 import SearchBox from './SearchBox';
 import { FaCartShopping } from "react-icons/fa6";
-
+import { useAuth } from '../contextApi/AuthConetxt'; // Adjust the path
 
 const Navbar = () => {
     const { isOpen, onToggle } = useDisclosure();
+    const { user, logout } = useAuth(); // Get user and logout function from context
 
     return (
-        <Flex m={2} alignItems="center">
-            <Box
-                fontSize={{ base: '20px', md: '25px' }} // Adjust font size for small screens
-                m={{ base: 2, md: 3 }} // Adjust margin for small screens
-                color={'green'}
-                fontWeight={'bold'}
-            >
+        <Flex
+            m={2}
+            alignItems="center"
+            bg="white" // Maintain background color
+            borderRadius="lg"
+            boxShadow="md"
+            p={3}
+            position="relative" // Positioning for the dropdown
+        >
+            <Box fontSize={{ base: '20px', md: '25px' }} m={{ base: 2, md: 3 }} color={'green'} fontWeight={'bold'}>
                 <Link to={'/'}>GROUPON</Link>
             </Box>
-
             <Spacer />
             <Box width={{ base: '100%', md: '50%' }} border={'1px solid grey'} borderRadius={'30px'}>
                 <Flex p={2}>
-                    <Box flex="1" width={'90%'}>
+                    <Box flex="1">
                         <SearchBox />
                     </Box>
-                  
                     <IconButton
                         colorScheme="green"
                         aria-label="Search database"
@@ -41,46 +43,58 @@ const Navbar = () => {
                 </Flex>
             </Box>
             <Spacer />
-
-            {/* Hamburger Icon for Mobile */}
             <IconButton
                 icon={<HamburgerIcon />}
                 aria-label="Open Menu"
-                onClick={onToggle}
-                display={{ base: 'block', md: 'none' }} // Show only on small screens
+                onClick={onToggle} // Ensure this calls the toggle function
+                display={{ base: 'block', md: 'none' }} // Show only on mobile
                 colorScheme="green"
+                variant="outline"
+                borderRadius="full"
             />
-
-            {/* Menu for Mobile */}
-            <Collapse in={isOpen}>
+            <Collapse in={isOpen} animateOpacity>
                 <VStack
                     bg="white"
                     position="absolute"
                     top="60px"
                     right="10px"
-                    boxShadow="md"
+                    boxShadow="lg"
                     borderRadius="lg"
                     spacing={4}
                     p={4}
                     zIndex={1}
+                    width="200px" // Fixed width for dropdown
                 >
-                    <LanguageModel />
-                    <Link to={'/wishlist'}><Text>Wishlist</Text></Link>
+                    <Link to={'/wishlist'}>
+                        <Text color="green" _hover={{ color: 'green.500' }}>Wishlist</Text>
+                    </Link>
                     <CartModel />
                     <Notifications />
                     <SignUp />
+                    <LanguageModel />
                 </VStack>
             </Collapse>
-
-            {/* Desktop Icons (Hidden on Small Screens) */}
-            <Flex fontSize={'2xl'} m={2} display={{ base: 'none', md: 'flex' }}> {/* Show only on larger screens */}
-                
+            <Flex fontSize={'2xl'} m={2} display={{ base: 'none', md: 'flex' }}>
                 <Box mr={4} fontSize={'larger'}>
                     <Link to={'/wishlist'}>♡</Link>
                 </Box>
-               <Link to={'cart'}><Button><FaCartShopping/></Button></Link>
+                <Link to={'/cart'}>
+                    <Button colorScheme="green">
+                        <FaCartShopping />
+                    </Button>
+                </Link>
                 <Notifications />
-                <SignUp />
+                <Link to={'/signin'}>
+                    <Button
+                        borderRadius={'20'}
+                        border={'1px solid gray'}
+                        ml={4}
+                        colorScheme="green"
+                        onClick={user ? logout : null} // Call logout on click if user is logged in
+                    >
+                        {user ? "LogOut ➡️" : "👤 Sign In"}
+                    </Button>
+                </Link>
             </Flex>
         </Flex>
     );

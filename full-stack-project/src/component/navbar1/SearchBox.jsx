@@ -54,6 +54,7 @@ function SearchBox() {
                     border="none"
                     outline="none"
                     _focus={{ border: 'none', boxShadow: 'none' }}
+                     autoComplete="off"
                 />
             </PopoverTrigger>
             <PopoverContent

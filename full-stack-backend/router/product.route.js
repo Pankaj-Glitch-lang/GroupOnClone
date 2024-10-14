@@ -20,12 +20,20 @@ ProductRouter.get('/:id', async (req, res) => {
 
 // Existing route to get all products with pagination and optional title filtering
 ProductRouter.get('/', async (req, res) => {
-    const { page, limit, title } = req.query; // Destructure and set default page and limit
-    const parsedPage = parseInt(page) ; // Default to page 1
-    const parsedLimit = parseInt(limit) ; // Default to 10 items per page
+    const { page, limit, title, category } = req.query; // Default page to 1 and limit to 10
+    const parsedPage = parseInt(page);
+    const parsedLimit = parseInt(limit);
 
     try {
-        const query = title ? { title: { $regex: title, $options: 'i' } } : {};
+        // Build the query object
+        const query = {};
+        if (title) {
+            query.title = { $regex: title, $options: 'i' }; // Title filter with regex
+        }
+        if (category) {
+            query.category = category; // Category filter
+        }
+
         const products = await ProductModel.find(query)
             .skip((parsedPage - 1) * parsedLimit)
             .limit(parsedLimit);
@@ -42,6 +50,7 @@ ProductRouter.get('/', async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 });
+
 
 // New route to fetch product details based on an array of product IDs
 ProductRouter.post('/details', async (req, res) => {
@@ -61,14 +70,14 @@ ProductRouter.post('/details', async (req, res) => {
 
 // Route to add a new product
 ProductRouter.post('/', async (req, res) => {
-    const { title, price, rating, image } = req.body;
+    const { name,title, price, rating, image,description,category } = req.body;
 
     if (!title || !price || !rating || !image) {
         return res.status(400).json({ error: 'All fields are required: title, price, rating, image' });
     }
 
     try {
-        const newProduct = await ProductModel.create({ title, price, rating, image });
+        const newProduct = await ProductModel.create({name, title, price, rating, image,description,category });
         res.status(201).json({ 'msg': newProduct });
     } catch (err) {
         res.status(400).json({ error: err.message });

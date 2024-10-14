@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose=require('mongoose')
 require('dotenv').config();
 
 const { authenticate } = require('../middleware/checkAuthentication'); // JWT verification middleware
@@ -60,7 +61,7 @@ router.post('/add', authenticate, async (req, res) => {
     }
 });
 
-// Bulk Add Items to Cart
+
 router.post('/add/bulk', authenticate, async (req, res) => {
     const items = req.body.items; // Expecting an array of items in the request body
 
@@ -91,28 +92,38 @@ router.post('/add/bulk', authenticate, async (req, res) => {
 
 // Remove Item from Cart
 router.post('/remove', authenticate, async (req, res) => {
-    const { productId, userId } = req.body; // Make sure userId is also included
-    console.log('Request Body:', req.body); // Debugging
+    const { productId } = req.body;
+
+    console.log('Product ID received from request:', productId); // Log request productId
 
     try {
-        const cart = await Cart.findOne( req.body.userId );
+        const cart = await Cart.findOne({ userId: req.body.userId });
         if (!cart) {
+            console.log('Cart not found for user:', req.body.userId);
             return res.status(404).json({ message: 'Cart not found' });
         }
 
-        const itemIndex = cart.items.findIndex(item => item.productId.equals(mongoose.Types.ObjectId(productId))); // Ensure to convert productId
+        // Log all product IDs in the cart
+        console.log('Product IDs in cart:', cart.items.map(item => item.productId.toString()));
+
+        // Convert productId to ObjectId if it's a string
+        const itemIndex = cart.items.findIndex(item => item.productId.equals(new mongoose.Types.ObjectId(productId)));
+
         if (itemIndex > -1) {
-            cart.items.splice(itemIndex, 1);
+            cart.items.splice(itemIndex, 1); // Remove the item
             await cart.save();
-            return res.json(cart);
+            console.log('Item removed successfully');
+            return res.json({ message: 'Item removed successfully', cart });
         } else {
+            console.log('Item not found in cart for productId:', productId);
             return res.status(404).json({ message: 'Item not found in cart' });
         }
     } catch (err) {
-        console.error(err); // Log the error for debugging
-        res.status(500).json({ message: err.message });
+        console.error('Error removing item from cart:', err);
+        return res.status(500).json({ message: 'Server error: ' + err.message });
     }
 });
+
 // Bulk Update Item Quantities in the Cart
 router.post('/update/bulk', authenticate, async (req, res) => {
     const items = req.body.items; // Expecting an array of objects with productId and quantity

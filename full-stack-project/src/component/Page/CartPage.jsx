@@ -1,10 +1,13 @@
 import { Box, Button, Text, Flex, Image, Input, useToast } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCart } from '../contextApi/CartContext'; // Assuming you have a CartContext
+import { useAuth } from '../contextApi/AuthConetxt';
+import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
     const { cartItems, products, removeFromCart, bulkUpdateCart } = useCart(); // Access products from context
-
+    const navigate=useNavigate();
+    const { user } = useAuth();
     const totalPrice = cartItems.reduce((acc, item) => {
         const product = products[item.productId]; // Get the product details from products object
         if (product) {
@@ -47,6 +50,16 @@ const CartPage = () => {
         }
     };
 
+
+    // Use auth context
+ 
+
+    useEffect(() => {
+        if (!user) {
+            console.log('User logged in:', user); // Log the user when it's updated
+            navigate('/signin'); // Redirect to home page upon login
+        }
+    }, [user]);
     return (
         <Box p={10}>
             <Text fontSize="3xl" fontWeight="bold" mb={5}>
@@ -100,7 +113,7 @@ const CartPage = () => {
                                         mt={2}
                                     />
                                 </Box>
-                                <Button onClick={() => removeFromCart(item._id)} colorScheme="red">
+                                <Button onClick={() => removeFromCart(item.productId)} colorScheme="red">
                                     Remove
                                 </Button>
                             </Flex>

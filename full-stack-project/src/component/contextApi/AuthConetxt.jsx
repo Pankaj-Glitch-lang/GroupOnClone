@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-
+import { jwtDecode } from "jwt-decode";
 // Create the Auth Context
 const AuthContext = createContext();
 
@@ -12,21 +12,34 @@ export const AuthProvider = ({ children }) => {
     // Login function
     const login = async (userData) => {
         try {
+            // Send login request with email and password
             const response = await axios.post('http://localhost:8080/auth/login', {
                 email: userData.email,
                 password: userData.password,
             });
-                
-            console.log('Login Response:', response.data); // Log the response data
-            setUser(response.data.user); // Set user info from the response
-            setToken(response.data.token); // Set the token
-
-            // Save user and token to local storage
-            localStorage.setItem('user', JSON.stringify(response.data.user));
-            localStorage.setItem('token', response.data.token);
-            return response.data; // Return response for further actions
+    
+            // Ensure the response contains both user and token
+            if (response.data && response.data.token) {
+                const token = response.data.token;
+    
+                // Decode the token to extract user information (if present in the token)
+                const decodedToken = jwtDecode(token);
+                console.log('Decoded Token:', decodedToken); // Log decoded token for debugging
+    
+                // Set user and token in the state
+                setUser(decodedToken);  // You can store the decoded token if it has user info
+                setToken(token);
+    
+                // Save the token and decoded user to localStorage
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(decodedToken)); // Save decoded token
+    
+                return response.data; // Return response for further actions
+            } else {
+                throw new Error('Invalid response format');
+            }
         } catch (error) {
-            console.error('Error during login:', error); // Log for debugging
+            console.error('Error during login:', error);
             throw new Error(error.response?.data?.message || 'Login failed');
         }
     };

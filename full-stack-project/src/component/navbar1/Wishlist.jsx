@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Text, Flex, Image, Button } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Wishlist = () => {
     const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token'); // Check if token exists in local storage
+    console.log('token', token)
+    useEffect(() => {
+        if (!token) {
+            navigate('/signin'); // Redirect to login page if no token is found
+        }
+    }, [token, navigate]);
+
+  
 
     return (
         <Box p={4}>

@@ -1,17 +1,25 @@
-const jwt=require('jsonwebtoken')
+
+const jwt = require('jsonwebtoken')
 const authenticate = (req, res, next) => {
-    const token = req.headers.authorization.split(' ')[1]; // Get the token from the Authorization header
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized' });
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+        return res.status(401).json({ message: 'Authorization header missing' });
     }
-    jwt.verify(token, 'Masai', (err, decoded) => {
-        if (err) {
-            return res.status(403).json({ message: 'Forbidden' });
-        }
-        console.log(decoded)
-        req.body.userId = decoded.userId; // Attach user info to the request
-        next();
-    });
+
+    const token = authHeader.split(' ')[1]; // Make sure 'Bearer <token>' format is correct
+
+    if (!token) {
+        return res.status(401).json({ message: 'Token missing' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, 'Masai');
+        req.body.userId = decoded.userId; // Attach the decoded user info to the request
+        next(); // Proceed to the next middleware or route handler
+    } catch (error) {
+        return res.status(403).json({ message: 'Invalid token' });
+    }
 };
 
-module.exports={authenticate};
+module.exports = { authenticate }

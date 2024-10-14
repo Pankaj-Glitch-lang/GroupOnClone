@@ -2,7 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { Routes,Route } from 'react-router-dom'
+import { Routes,Route, Navigate } from 'react-router-dom'
 import Wishlist from './component/navbar1/Wishlist'
 import Navbar from './component/navbar1/Navbar'
 import Home from './component/navbar1/Home'
@@ -20,11 +20,14 @@ import DetailsPage from './component/Page/DetailsPage'
 import Footer from './component/Footer/Footer'
 import CartPage from './component/Page/CartPage'
 import { CartProvider } from './component/contextApi/CartContext'
-
+import SignUp from './component/navbar1/SignUp'
+import SignUpSignIn from './component/navbar1/SignUp'
+import { useAuth } from './component/contextApi/AuthConetxt';
 
 
 function App() {
   
+ const{login}=useAuth();
 
   return (
     <>
@@ -42,7 +45,7 @@ function App() {
         <Route path='/things-to-do' element={<ThingsToDo/>}/>
         <Route path='/gifts' element={<Gifts/>}/>
         <Route path='/auto-and-home' element={<AutoNHome/>}/>
-
+        <Route path='/signin' element={<SignUpSignIn/>}/>
         <Route path='/food-and-drink' element={<FoodNDrink/>}/>
         <Route path='/local' element={<Local/>}/>
         <Route path='/travel' element={<Travel/>}/>
