@@ -1,0 +1,10 @@
+ /* styles.css */
+
+.favorite-icon {
+    transition: background-color 0.2s; /* Add smooth transition */
+}
+
+.favorite-icon:hover {
+    background-color: red; /* Change icon background color on hover */
+    border-radius: 50%; /* Optional: makes the hover effect circular */
+}
