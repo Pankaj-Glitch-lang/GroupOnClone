@@ -18,13 +18,14 @@ const Navbar = () => {
         <Flex
             m={2}
             alignItems="center"
-            bg="white" // Maintain background color
+            bg="white"
             borderRadius="lg"
             boxShadow="md"
             p={3}
-            position="relative" // Positioning for the dropdown
+            position="relative"
+            overflow={'visible'}
         >
-            <Box fontSize={{ base: '20px', md: '25px' }} m={{ base: 2, md: 3 }} color={'green'} fontWeight={'bold'}>
+            <Box fontSize={{ base: '20px', md: '25px' }} m={2} color={'green'} fontWeight={'bold'}>
                 <Link to={'/'}>GROUPON</Link>
             </Box>
             <Spacer />
@@ -46,8 +47,8 @@ const Navbar = () => {
             <IconButton
                 icon={<HamburgerIcon />}
                 aria-label="Open Menu"
-                onClick={onToggle} // Ensure this calls the toggle function
-                display={{ base: 'block', md: 'none' }} // Show only on mobile
+                onClick={onToggle}
+                display={{ base: 'block', md: 'none' }}
                 colorScheme="green"
                 variant="outline"
                 borderRadius="full"
@@ -62,10 +63,10 @@ const Navbar = () => {
                     borderRadius="lg"
                     spacing={4}
                     p={4}
-                    zIndex={1}
-                    width="200px" // Fixed width for dropdown
+                    zIndex={10} // Increased z-index
+                    width={200}
                 >
-                    <Link to={'/wishlist'}>
+                    <Link to={'/wishlist'} onClick={onToggle}>
                         <Text color="green" _hover={{ color: 'green.500' }}>Wishlist</Text>
                     </Link>
                     <CartModel />
@@ -90,7 +91,7 @@ const Navbar = () => {
                         border={'1px solid gray'}
                         ml={4}
                         colorScheme="green"
-                        onClick={user ? logout : null} // Call logout on click if user is logged in
+                        onClick={user ? logout : null}
                     >
                         {user ? "LogOut ➡️" : "👤 Sign In"}
                     </Button>

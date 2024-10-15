@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCart } from '../contextApi/CartContext'; // Use Cart Context
 import { useAuth } from '../contextApi/AuthConetxt'; // Adjust the path
+const base_url = import.meta.env.VITE_HOST_URL;
 
 const DetailsPage = () => {
     const { id } = useParams();
@@ -23,7 +24,7 @@ const DetailsPage = () => {
 
     const fetchDetails = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/product/${id}`);
+            const response = await axios.get(`${base_url}/product/${id}`);
             setData(response.data.msg);
             setError(false);
         } catch (err) {

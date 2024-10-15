@@ -22,10 +22,9 @@ function SearchBox() {
     const [searchTerm, setSearchTerm] = useState('');
     const [results, setResults] = useState([]);
 
-    const fetchproducts = async (query) => {
+    const fetchProducts = async (query) => {
         try {
             const res = await axios.get(`${base_url}/product?page=1&limit=6&title=${query}`);
-            console.log(res.data);
             setResults(res.data.msg);
         } catch (err) {
             console.log('Something went wrong while searching', err);
@@ -35,7 +34,7 @@ function SearchBox() {
     const handleSearch = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
-        fetchproducts(value);
+        fetchProducts(value);
     };
 
     return (
@@ -50,19 +49,19 @@ function SearchBox() {
                     value={searchTerm}
                     onChange={handleSearch}
                     onClick={handleSearch}
-                    width={{ base: "100%", md: "auto" }} // Make input full width on small screens
+                    width={{ base: "100%", md: "250px" }} // Make input full width on small screens, fixed width on larger screens
                     _hover={{ bg: 'white' }}
-                    border="none"
-                    outline="none"
-                    _focus={{ border: 'none', boxShadow: 'none' }}
-                     autoComplete="off"
+                    border="none" // Adding border for better visibility
+                    borderRadius="20px" // Adjusted border radius for a softer look
+                    _focus={{ border: 'none', boxShadow: 'none' }} // Green border on focus
+                    autoComplete="off"
                 />
             </PopoverTrigger>
             <PopoverContent
                 color='black'
                 bg='white'
                 borderColor='whitesmoke'
-                width={{ base: "90%", md: "600px" }} // Adjust width for responsiveness
+                width={{ base: "90%", md: "400px" }} // Responsive width for popover
                 borderRadius={30}
                 mx={2} // Margin on left and right
             >
@@ -70,7 +69,7 @@ function SearchBox() {
                 <PopoverBody>
                     {results.length > 0 ? (
                         <Flex flexDirection={'column'} spacing={2} p={4}
-                            maxHeight="400px" // Limit height to allow scrolling
+                            maxHeight="300px" // Limit height for better UX
                             overflowY="auto">
                             {results.map((result, index) => (
                                 <Box key={index} m={2}>
@@ -85,7 +84,7 @@ function SearchBox() {
                             ))}
                         </Flex>
                     ) : (
-                        <Box>No deals found.</Box>
+                        <Box textAlign="center" p={4}>No deals found.</Box> // Centered text for no results
                     )}
                 </PopoverBody>
             </PopoverContent>

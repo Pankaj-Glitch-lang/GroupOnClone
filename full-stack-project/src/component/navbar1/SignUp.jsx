@@ -41,14 +41,16 @@ const SignUpSignIn = () => {
                 const userData = { name, email, password };
                 console.log('Registering:', userData);
                 await register(userData);
-                navigate('/'); // Redirect to home page after successful registration
+                alert('Registration successful! Please log in now.');
+                setIsAlreadyRegistered(true); // Switch to login after registration
+                setIsAlreadyNotRegistered(false);
             } else {
                 const userData = { email, password };
                 console.log('Logging in:', userData);
                 await login(userData);
+                navigate('/'); // Redirect to home page after successful login
             }
 
-            alert('Operation successful!');
         } catch (error) {
             console.error('Error during operation:', error); // Log error details
             alert('An error occurred: ' + error.message);
@@ -88,12 +90,16 @@ const SignUpSignIn = () => {
                     {isAlreadyNotRegistered ? "Sign Up" : "Sign In"}
                 </Button>
 
-                <Button variant="link" onClick={handleAlreadyRegistered}>
-                    I have an account
-                </Button>
-                <Button variant="link" onClick={handleNewRegister}>
-                    I'm a new customer
-                </Button>
+                {!isAlreadyNotRegistered && (
+                    <Button variant="link" onClick={handleAlreadyRegistered}>
+                        I have an account
+                    </Button>
+                )}
+                {!isAlreadyRegistered && (
+                    <Button variant="link" onClick={handleNewRegister}>
+                        I'm a new customer
+                    </Button>
+                )}
             </VStack>
         </Box>
     );
