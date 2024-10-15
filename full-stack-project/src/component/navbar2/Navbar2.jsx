@@ -2,6 +2,7 @@ import { Box, Flex, Stack, useBreakpointValue, Text } from '@chakra-ui/react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+
 const Navbar2 = () => {
   const spacing = useBreakpointValue({ base: 3, md: 5 });
   const hoverColor = useBreakpointValue({ base: 'gray.300', md: 'gray.200' });

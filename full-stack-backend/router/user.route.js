@@ -2,9 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const UserModel = require('../model/user.model');
 const UserRouter = express.Router();
+require('dotenv').config();
 const Bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Cart = require('../model/cart.model');
+const Secret_Key=process.env.Secret_Key;
 
 require('dotenv').config();
 
@@ -77,7 +79,7 @@ UserRouter.post('/login', async (req, res) => {
         }
 
         // Generate JWT token
-        const token = jwt.sign({ email, userId: existingUser._id }, 'Masai', { expiresIn: '1h' });
+        const token = jwt.sign({ email, userId: existingUser._id }, Secret_Key, { expiresIn: '1h' });
         return res.status(200).json({ token });
     } catch (err) {
         console.error(err); // Log the error for debugging

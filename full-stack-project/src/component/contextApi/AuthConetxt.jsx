@@ -1,8 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+
 import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
+const base_url = import.meta.env.VITE_HOST_URL;
+
 // Create the Auth Context
 const AuthContext = createContext();
+
+
 
 // Create a provider component
 export const AuthProvider = ({ children }) => {
@@ -13,7 +18,7 @@ export const AuthProvider = ({ children }) => {
     const login = async (userData) => {
         try {
             // Send login request with email and password
-            const response = await axios.post('http://localhost:8080/auth/login', {
+            const response = await axios.post(`${base_url}/auth/login`, {
                 email: userData.email,
                 password: userData.password,
             });
@@ -47,7 +52,7 @@ export const AuthProvider = ({ children }) => {
     // Example register function in AuthContext
     const register = async (userData) => {
         try {
-            const response = await axios.post('http://localhost:8080/auth/register', userData);
+            const response = await axios.post(`${base_url}/auth/register`, userData);
             setUser(response.data.user);
             setToken(response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user));

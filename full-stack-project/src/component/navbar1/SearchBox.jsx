@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+const base_url = import.meta.env.VITE_HOST_URL;
 
 function SearchBox() {
     const initialFocusRef = useRef();
@@ -23,7 +24,7 @@ function SearchBox() {
 
     const fetchproducts = async (query) => {
         try {
-            const res = await axios.get(`http://localhost:8080/product?page=1&limit=6&title=${query}`);
+            const res = await axios.get(`${base_url}/product?page=1&limit=6&title=${query}`);
             console.log(res.data);
             setResults(res.data.msg);
         } catch (err) {

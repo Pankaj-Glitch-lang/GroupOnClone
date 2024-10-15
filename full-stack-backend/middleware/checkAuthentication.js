@@ -1,4 +1,4 @@
-
+const Secret_Key=process.env.Secret_Key;
 const jwt = require('jsonwebtoken')
 const authenticate = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -14,7 +14,7 @@ const authenticate = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, 'Masai');
+        const decoded = jwt.verify(token, Secret_Key);
         req.body.userId = decoded.userId; // Attach the decoded user info to the request
         next(); // Proceed to the next middleware or route handler
     } catch (error) {

@@ -4,6 +4,9 @@ import { useAuth } from './AuthConetxt'; // Ensure the correct path for your Aut
 
 const CartContext = createContext();
 
+const base_url = import.meta.env.VITE_HOST_URL;
+
+
 export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
@@ -23,7 +26,7 @@ export const CartProvider = ({ children }) => {
     const fetchCart = async () => {
         if (!token) return; // Check if token is available
         try {
-            const response = await axios.get('http://localhost:8080/cart', {
+            const response = await axios.get(`${base_url}/cart`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setCartItems(response.data.items || []); // Set cart items or empty array
@@ -39,7 +42,7 @@ export const CartProvider = ({ children }) => {
     // Fetch product details based on product IDs in the cart
     const fetchProductDetails = async (productIds) => {
         try {
-            const response = await axios.post('http://localhost:8080/product/details', { ids: productIds });
+            const response = await axios.post(`${base_url}/product/details`, { ids: productIds });
             const productsData = response.data.reduce((acc, product) => {
                 acc[product._id] = product; // Store products by ID for easy access
                 return acc;
@@ -66,7 +69,7 @@ export const CartProvider = ({ children }) => {
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/cart/add', 
+            const response = await axios.post(`${base_url}/cart/add`, 
                 { productId: item._id, quantity: 1 }, 
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -97,7 +100,7 @@ export const CartProvider = ({ children }) => {
     
         try {
             const response = await axios.post(
-                'http://localhost:8080/cart/remove',
+                `${base_url}/cart/remove`,
                 { productId }, // Only send the productId
                 {
                     headers: {

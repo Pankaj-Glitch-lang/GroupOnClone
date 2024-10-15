@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Button, Text, Box, Image, Grid, Flex } from '@chakra-ui/react';
 import { MdFavoriteBorder } from "react-icons/md";
 import { Link } from 'react-router-dom';
+const base_url = import.meta.env.VITE_HOST_URL;
+
 
 
 const AutoNHome = () => {
@@ -26,7 +28,7 @@ const AutoNHome = () => {
   }
 
   useEffect(() => {
-    axios.get('http://localhost:8080/product?category=auto-and-home')
+    axios.get(`${base_url}/product?category=auto-and-home`)
       .then((res) => {
         console.log('Fetched data:', res.data);  // Check if the data is correct
         setData([...res.data.msg]);  // Spread to ensure it's a new array (state immutability)
